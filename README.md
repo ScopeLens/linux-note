@@ -2,6 +2,8 @@
 学习linux与相关脚本
 
 - [Linux-note](#linux-note)
+  - [Linux命令](#linux命令)
+  - [Shell命令](#shell命令)
     - [Shell变量](#shell变量)
       - [变量声明](#变量声明)
       - [变量使用](#变量使用)
@@ -36,6 +38,16 @@
     - [printf命令](#printf命令)
       - [概念](#概念)
       - [常用字符速查](#常用字符速查)
+    - [流程控制](#流程控制)
+      - [if](#if)
+      - [for循环](#for循环)
+      - [while语句](#while语句)
+      - [until循环](#until循环)
+      - [case...esac](#caseesac)
+
+## Linux命令
+
+## Shell命令
 
 ### Shell变量
 
@@ -360,3 +372,111 @@ num=1
 |%.2f|2位小数|
 |%c|单个字符|
 |%%|百分号|
+
+### 流程控制
+
+#### if
+
+**else块中没有语句就不能书写**
+
+**if 块**
+```
+if condition;
+then 
+  command1
+  command2
+fi
+```
+
+**if else块**
+```
+if condition;
+then
+  command1
+  ...
+else
+  command
+  ...
+fi
+```
+
+**if elseif else块**
+```
+if condition;
+then
+  command1
+  ...
+elif condition2;
+then
+  command
+  ...
+else
+  command
+  ...
+fi
+```
+
+#### for循环
+
+```
+for item in item1 item2 item3...
+do
+  command
+  ...
+done
+```
+
+#### while语句
+```
+while condition
+do
+  command
+  ...
+done
+```
+
+死循环:
+```
+while :
+do
+  command
+  ...
+done
+
+while true
+do
+  command
+done
+
+for((;;))
+```
+
+#### until循环
+```
+until condition
+do
+  command
+done
+```
+
+#### case...esac
+
+类似switch...case
+
+```
+case 值 in
+mode1)
+  command
+  ...
+  ;;
+mode2)
+  command
+  ...
+  ;;
+  *) #相当于default
+  command
+  ;;
+esac
+```
+
+**跳出循环也是传统的break跳出循环,continue跳出当前循环**
