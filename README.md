@@ -44,6 +44,7 @@
       - [while语句](#while语句)
       - [until循环](#until循环)
       - [case...esac](#caseesac)
+    - [函数](#函数)
 
 ## Linux命令
 
@@ -480,3 +481,29 @@ esac
 ```
 
 **跳出循环也是传统的break跳出循环,continue跳出当前循环**
+
+### 函数
+
+```
+[ function ] funcName ()
+{
+  action
+  [return int;]
+}
+
+[]中为可选
+
+demoFun(){
+  echo "这是我的第一个shell函数"
+
+  echo "这是我的第一个参数$1"
+}
+
+echo "---函数开始执行---"
+demoFun "helloworld"
+echo "---函数执行完毕---"
+```
+
+使用$?去获取函数返回值
+**$?仅对上一条指令负责,所以获得返回值之后,有需要必须马上使用参数保存**
+想要为函数传递参数,就和为脚本传递参数一样,$1,$2之类的
