@@ -5,6 +5,7 @@
   - [Linux命令](#linux命令)
     - [常用命令](#常用命令)
     - [部署systemd](#部署systemd)
+    - [ssh连接服务器](#ssh连接服务器)
   - [Shell命令](#shell命令)
     - [Shell变量](#shell变量)
       - [变量声明](#变量声明)
@@ -186,6 +187,11 @@ journalctl
     - 重启服务:sudo systemctl restart [服务名]
     - 禁用开机自启动:sudo systemctl disable [服务名]
 
+### ssh连接服务器
+
+1. 在cmd中使用`ssh [用户]@[ip]`
+2. 回车后输入密码即可登录
+3. 退出可以使用:`exit`:正常退出,`ctrl+D`快捷退出,`~.`遇到错误时候强制退出
 
 ## Shell命令
 
