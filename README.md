@@ -11,6 +11,14 @@
         - [生成与配置](#生成与配置)
         - [好处](#好处)
     - [简单vim操作](#简单vim操作)
+    - [Swap拓展内存](#swap拓展内存)
+      - [工作原理](#工作原理)
+      - [计算所需Swap空间](#计算所需swap空间)
+      - [使用流程](#使用流程)
+      - [关键参数:Swappiness](#关键参数swappiness)
+        - [1.临时设置](#1临时设置)
+        - [2.永久设置](#2永久设置)
+      - [配置swap永久生效](#配置swap永久生效)
   - [Shell命令](#shell命令)
     - [Shell变量](#shell变量)
       - [变量声明](#变量声明)
@@ -173,6 +181,7 @@ journalctl
     
     [Service]
     ExecStart=/home/apiBot/ApiBot #程序地址
+    Environment="APP_ENV=prod" #配置环境变量
     WorkingDirectory=/home/apiBot #工作目录
     Restart=always #是否自启动
     RestartSec=3 #自启动间隔
@@ -184,7 +193,7 @@ journalctl
     ```
 
 2. 启动服务
-    - 重载服务文件:sudo systemctl daemon-reload
+    - 重载服务文件:sudo systemctl daemon-reload #类似刷新菜单
     - 设置开机自启动:sudo systemctl enable [服务名]
     - 启动服务:sudo systemctl start [服务名]
     - 查看运行状态:sudo systemctl status [服务名]
@@ -251,6 +260,64 @@ github的设置中有专门的ssh选项,可以自由配置多个公钥,也可以
 |退出插入|esc|
 |保存退出|:wq,`write`,`quit`|
 |不保存直接退出|:q!|
+
+### Swap拓展内存
+
+#### 工作原理
+
+Swap的核心机制是分页
+- 换出:当RAM压力较大时,内核扫描内存,将不活跃的内存页写入到磁盘的Swap区
+- 换入:当进程需要访问已经被移至Swap的数据,内核产生"缺页中断",将数据从磁盘重新读回RAM
+
+|形式|描述|优点|缺点|
+|----|----|---|---|
+|Swap 分区 (Swap Partition)|硬盘上一个独立的分区，没有文件系统。|性能理论上略好（数据块连续）。|调整容量困难，需要重新分区。|
+|Swap 文件 (Swap File)|根目录或指定目录下的一大块预分配文件。|配置灵活，可随时增加、删除或调整大小。|在极老旧的内核上可能存在微小性能损耗。|
+
+#### 计算所需Swap空间
+   
+经验法则(来自网络):  
+
+|RAM|Swap|
+|---|----|
+|RAM<2GB|Swap=RAM*2|
+|2GB<=RAM<=8GB|Swap=RAM|
+|RAM>8GB|4GB<=Swap<=8GB|
+
+#### 使用流程
+```
+sudo fallocate -l 2G /swapfile      # 创建一个2G的文件
+sudo chmod 600 /swapfile            # 安全权限设置
+sudo mkswap /swapfile               # 格式化为交换格式
+sudo swapon /swapfile               # 启用该空间
+```
+
+#### 关键参数:Swappiness
+表示系统使用swap的积极度,取值范围`0-100`
+- 0:尽量不适用,只有内存完全耗尽时才使用
+- 10-60:桌面系统常见60,服务器建议10
+- 100:积极的将不活跃内存换出到swap
+
+```
+#查询当前值
+cat /proc/sys/vm/swappiness
+```
+
+##### 1.临时设置
+
+```
+# 临时将 swappiness 设置为 10
+sudo sysctl vm.swappiness=10
+```
+
+##### 2.永久设置
+
+编辑系统配置`/etc/sysctl.conf`,在文件末尾加上`vm.swappiness = 10`  
+保存后运行`sudo sysctl -p`
+
+#### 配置swap永久生效
+
+在`/etc/fstab`文件末尾加上`/swapfile none swap sw 0 0`
 
 ## Shell命令
 
